@@ -1,9 +1,4 @@
-import {
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,10 +9,7 @@ import work3 from "@/assets/work-3.jpg";
 import work4 from "@/assets/work-4.jpg";
 
 import { SectionLabel } from "@/components/site/Reveal";
-import {
-  useIsDesktop,
-  usePrefersReducedMotion,
-} from "@/lib/motion";
+import { useIsDesktop, usePrefersReducedMotion } from "@/lib/motion";
 import { useAdminStore } from "@/lib/admin-store";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -28,40 +20,58 @@ gsap.registerPlugin(ScrollTrigger);
 
 const FALLBACK_PROJECTS = [
   {
-    title: "Noir Table",
-    category: "Digital Menu",
+    title: "Digital Menu",
+    category: "Digital Solutions",
     year: "2026",
     media_url: work1,
     media_type: "video" as const,
     blurb:
-      "A fine-dining menu experience where every category transition is choreographed.",
+      "A complete digital menu accessible by QR Code or direct link, with online ordering, payments, and delivery integration.",
+    features: [
+      "QR Code",
+      "PDF Menu",
+      "Online Menu",
+      "Online Ordering",
+      "Online Payment",
+      "Delivery Integration",
+    ],
   },
   {
-    title: "Velocity",
-    category: "Motion Identity",
-    year: "2025",
+    title: "Branding & Graphic Design",
+    category: "Creative & Branding",
+    year: "2026",
     media_url: work2,
     media_type: "image" as const,
     blurb:
-      "A brand system built entirely around light trails and momentum.",
+      "Complete visual design solutions for restaurants, cafes, and businesses across digital, packaging, and printed materials.",
+    features: [
+      "Menu Design",
+      "Packaging",
+      "Stickers",
+      "Promo Items",
+      "Social Media",
+      "Banners & Print",
+    ],
   },
   {
-    title: "Aurora",
-    category: "Brand & Web",
-    year: "2025",
+    title: "Website Development",
+    category: "Web Development",
+    year: "2026",
     media_url: work3,
     media_type: "image" as const,
     blurb:
-      "Members-only club identity, from print edges to interactive invitations.",
+      "Complete website systems from UI/UX to development, integrations, and an Admin Dashboard for managing business operations.",
+    features: ["UI/UX", "Front-End", "Back-End", "Database", "APIs & Payments", "Admin Dashboard"],
   },
   {
-    title: "Vellora",
-    category: "Interactive Kiosk",
+    title: "Digital Business Card",
+    category: "NFC & QR Solutions",
     year: "2026",
     media_url: work4,
     media_type: "image" as const,
     blurb:
-      "Lobby check-in experience running across hotel screens in four languages.",
+      "A modern digital business card that gives customers instant access to personal or company contact information.",
+    features: ["NFC", "QR Code", "Contact Details", "Instant Access"],
   },
 ];
 
@@ -76,63 +86,42 @@ interface DisplayProject {
   media_url: string;
   media_type: "image" | "video";
   blurb: string;
+  features?: string[];
 }
 
 /* ═════════════════════════════════════════════
    WORK
 ═════════════════════════════════════════════ */
 
-export function Work({
-  heading = true,
-}: {
-  heading?: boolean;
-}) {
+export function Work({ heading = true }: { heading?: boolean }) {
   const { projects } = useAdminStore();
 
   const desktop = useIsDesktop();
   const reduced = usePrefersReducedMotion();
 
-  const displayProjects: DisplayProject[] =
-    useMemo(() => {
-      if (projects.length > 0) {
-        return [...projects]
-          .sort(
-            (a, b) =>
-              a.sort_order -
-              b.sort_order
-          )
-          .map((p) => ({
-            title: p.title,
-            category: p.category,
-            year: p.year,
-            media_url:
-              p.media_url || work1,
-            media_type:
-              p.media_type || "image",
-            blurb: p.blurb || "",
-          }));
-      }
+  const displayProjects: DisplayProject[] = useMemo(() => {
+    if (projects.length > 0) {
+      return [...projects]
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map((p) => ({
+          title: p.title,
+          category: p.category,
+          year: p.year,
+          media_url: p.media_url || work1,
+          media_type: p.media_type || "image",
+          blurb: p.blurb || "",
+        }));
+    }
 
-      return FALLBACK_PROJECTS;
-    }, [projects]);
+    return FALLBACK_PROJECTS;
+  }, [projects]);
 
   return (
-    <section
-      id="work"
-      className="relative"
-    >
+    <section id="work" className="relative">
       {desktop && !reduced ? (
-        <DesktopWork
-          key="desktop-work"
-          projects={displayProjects}
-          heading={heading}
-        />
+        <DesktopWork key="desktop-work" projects={displayProjects} heading={heading} />
       ) : (
-        <MobileStack
-          key="mobile-work"
-          projects={displayProjects}
-          heading={heading}
-        />
+        <MobileStack key="mobile-work" projects={displayProjects} heading={heading} />
       )}
     </section>
   );
@@ -142,13 +131,7 @@ export function Work({
    DESKTOP WRAPPER
 ═════════════════════════════════════════════ */
 
-function DesktopWork({
-  projects,
-  heading,
-}: {
-  projects: DisplayProject[];
-  heading: boolean;
-}) {
+function DesktopWork({ projects, heading }: { projects: DisplayProject[]; heading: boolean }) {
   /*
    * rootRef:
    * ScrollTrigger trigger فقط.
@@ -160,25 +143,13 @@ function DesktopWork({
    * بالتالي React root مش بيتغير.
    */
 
-  const rootRef =
-    useRef<HTMLDivElement | null>(
-      null
-    );
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const pinRef =
-    useRef<HTMLDivElement | null>(
-      null
-    );
+  const pinRef = useRef<HTMLDivElement | null>(null);
 
-  const trackRef =
-    useRef<HTMLDivElement | null>(
-      null
-    );
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
-  const [
-    activeIndex,
-    setActiveIndex,
-  ] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -189,19 +160,13 @@ function DesktopWork({
       return;
     }
 
-    const layers = Array.from(
-      track.querySelectorAll<HTMLElement>(
-        "[data-phone-layer]"
-      )
-    );
+    const layers = Array.from(track.querySelectorAll<HTMLElement>("[data-phone-layer]"));
 
     if (!layers.length) {
       return;
     }
 
-    let tween:
-      | gsap.core.Tween
-      | null = null;
+    let tween: gsap.core.Tween | null = null;
 
     const ctx = gsap.context(() => {
       const total = layers.length;
@@ -221,13 +186,9 @@ function DesktopWork({
 
       tween = gsap.to(track, {
         y: () => {
-          const itemHeight =
-            layers[0]?.offsetHeight || 0;
+          const itemHeight = layers[0]?.offsetHeight || 0;
 
-          return -(
-            itemHeight *
-            (total - 1)
-          );
+          return -(itemHeight * (total - 1));
         },
 
         ease: "none",
@@ -243,14 +204,7 @@ function DesktopWork({
 
           start: "top top",
 
-          end: () =>
-            `+=${
-              Math.max(
-                total - 1,
-                1
-              ) *
-              window.innerHeight
-            }`,
+          end: () => `+=${Math.max(total - 1, 1) * window.innerHeight}`,
 
           scrub: 1,
 
@@ -259,14 +213,7 @@ function DesktopWork({
           invalidateOnRefresh: true,
 
           onUpdate: (self) => {
-            const index =
-              Math.min(
-                total - 1,
-                Math.round(
-                  self.progress *
-                    (total - 1)
-                )
-              );
+            const index = Math.min(total - 1, Math.round(self.progress * (total - 1)));
 
             setActiveIndex(index);
           },
@@ -278,10 +225,9 @@ function DesktopWork({
      * Refresh بعد ما layout يستقر.
      */
 
-    const raf =
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+    const raf = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
 
     return () => {
       cancelAnimationFrame(raf);
@@ -292,12 +238,8 @@ function DesktopWork({
        * ما يشيل الـ component.
        */
 
-      if (
-        tween?.scrollTrigger
-      ) {
-        tween.scrollTrigger.kill(
-          true
-        );
+      if (tween?.scrollTrigger) {
+        tween.scrollTrigger.kill(true);
       }
 
       tween?.kill();
@@ -307,10 +249,7 @@ function DesktopWork({
   }, [projects]);
 
   return (
-    <div
-      ref={rootRef}
-      className="relative w-full"
-    >
+    <div ref={rootRef} className="relative w-full">
       <div
         ref={pinRef}
         className="
@@ -346,9 +285,7 @@ function DesktopPhoneShowcase({
   projects: DisplayProject[];
   heading: boolean;
 }) {
-  const project =
-    projects[activeIndex] ??
-    projects[0];
+  const project = projects[activeIndex] ?? projects[0];
 
   if (!project) {
     return null;
@@ -380,9 +317,7 @@ function DesktopPhoneShowcase({
           pr-8
         "
       >
-        <SectionLabel>
-          Selected Work
-        </SectionLabel>
+        <SectionLabel>Selected Work</SectionLabel>
 
         {heading && (
           <h2
@@ -401,8 +336,7 @@ function DesktopPhoneShowcase({
               <span
                 className="line-inner"
                 style={{
-                  transform:
-                    "translateY(0)",
+                  transform: "translateY(0)",
                   opacity: 1,
                 }}
               >
@@ -414,8 +348,7 @@ function DesktopPhoneShowcase({
               <span
                 className="line-inner"
                 style={{
-                  transform:
-                    "translateY(0)",
+                  transform: "translateY(0)",
                   opacity: 1,
                 }}
               >
@@ -460,8 +393,7 @@ function DesktopPhoneShowcase({
                 text-primary
               "
             >
-              {project.category} ·{" "}
-              {project.year}
+              {project.category} · {project.year}
             </span>
           </div>
 
@@ -491,6 +423,39 @@ function DesktopPhoneShowcase({
           >
             {project.blurb}
           </p>
+
+          {project.features?.length ? (
+            <div
+              className="
+                mt-5
+                flex
+                max-w-md
+                flex-wrap
+                gap-2
+              "
+            >
+              {project.features.map((feature) => (
+                <span
+                  key={feature}
+                  className="
+                    rounded-full
+                    border
+                    border-border/70
+                    bg-surface/70
+                    px-3
+                    py-1.5
+                    text-[10px]
+                    font-medium
+                    tracking-wide
+                    text-muted-foreground
+                    backdrop-blur-sm
+                  "
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {/* PROGRESS */}
@@ -506,14 +471,9 @@ function DesktopPhoneShowcase({
           <div
             className="trail-x h-px"
             style={{
-              width: `${
-                ((activeIndex + 1) /
-                  projects.length) *
-                100
-              }%`,
+              width: `${((activeIndex + 1) / projects.length) * 100}%`,
 
-              transition:
-                "width 400ms var(--ease-cine)",
+              transition: "width 400ms var(--ease-cine)",
             }}
           />
         </div>
@@ -526,23 +486,13 @@ function DesktopPhoneShowcase({
             text-muted-foreground
           "
         >
-          <span className="text-foreground">
-            {String(
-              activeIndex + 1
-            ).padStart(2, "0")}
-          </span>
+          <span className="text-foreground">{String(activeIndex + 1).padStart(2, "0")}</span>
 
           {" / "}
 
-          {String(
-            projects.length
-          ).padStart(2, "0")}
+          {String(projects.length).padStart(2, "0")}
         </div>
       </div>
-
-      {/* ═══════════════════════════════
-          PHONE
-      ═══════════════════════════════ */}
 
       <div className="relative w-[25em]">
         {/* GLOW */}
@@ -615,38 +565,13 @@ function DesktopPhoneShowcase({
                 viewBox="0 0 16 16"
                 fill="currentColor"
               >
-                <rect
-                  x="1"
-                  y="10"
-                  width="3"
-                  height="5"
-                  rx="0.5"
-                />
+                <rect x="1" y="10" width="3" height="5" rx="0.5" />
 
-                <rect
-                  x="5"
-                  y="7"
-                  width="3"
-                  height="8"
-                  rx="0.5"
-                />
+                <rect x="5" y="7" width="3" height="8" rx="0.5" />
 
-                <rect
-                  x="9"
-                  y="4"
-                  width="3"
-                  height="11"
-                  rx="0.5"
-                />
+                <rect x="9" y="4" width="3" height="11" rx="0.5" />
 
-                <rect
-                  x="13"
-                  y="1"
-                  width="3"
-                  height="14"
-                  rx="0.5"
-                  opacity="0.3"
-                />
+                <rect x="13" y="1" width="3" height="14" rx="0.5" opacity="0.3" />
               </svg>
 
               <svg
@@ -663,11 +588,7 @@ function DesktopPhoneShowcase({
                   opacity="0.3"
                 />
 
-                <circle
-                  cx="8"
-                  cy="8"
-                  r="2.5"
-                />
+                <circle cx="8" cy="8" r="2.5" />
               </svg>
             </div>
           </div>
@@ -711,51 +632,49 @@ function DesktopPhoneShowcase({
                 w-full
               "
             >
-              {projects.map(
-                (p, i) => (
-                  <div
-                    key={`${p.title}-${i}`}
-                    data-phone-layer
-                    className="
+              {projects.map((p, i) => (
+                <div
+                  key={`${p.title}-${i}`}
+                  data-phone-layer
+                  className="
                       relative
                       aspect-[9/16]
                       w-full
                       overflow-hidden
                     "
-                  >
-                    {p.media_type ===
-                    "video" ? (
-                      <video
-                        src={
-                          p.media_url
-                        }
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        className="
-                          h-full
-                          w-full
-                          object-cover
-                        "
-                      />
-                    ) : (
-                      <img
-                        src={
-                          p.media_url
-                        }
-                        alt={`${p.title} — ${p.category}`}
-                        className="
-                          h-full
-                          w-full
-                          object-cover
-                        "
-                      />
-                    )}
-
-                    <div
+                >
+                  {p.media_type === "video" ? (
+                    <video
+                      src={p.media_url}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
                       className="
+                          h-full
+                          w-full
+                          bg-black
+                          object-contain
+                          object-center
+                        "
+                    />
+                  ) : (
+                    <img
+                      src={p.media_url}
+                      alt={`${p.title} — ${p.category}`}
+                      className="
+                          h-full
+                          w-full
+                          bg-black
+                          object-contain
+                          object-center
+                        "
+                    />
+                  )}
+
+                  <div
+                    className="
                         pointer-events-none
                         absolute
                         inset-x-0
@@ -765,10 +684,9 @@ function DesktopPhoneShowcase({
                         from-ink/70
                         to-transparent
                       "
-                    />
-                  </div>
-                )
-              )}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -802,13 +720,7 @@ function DesktopPhoneShowcase({
    MOBILE CINEMATIC STACK
 ═════════════════════════════════════════════ */
 
-function MobileStack({
-  projects,
-  heading,
-}: {
-  projects: DisplayProject[];
-  heading: boolean;
-}) {
+function MobileStack({ projects, heading }: { projects: DisplayProject[]; heading: boolean }) {
   /*
    * نفس الفكرة:
    *
@@ -818,20 +730,11 @@ function MobileStack({
    * متعملش pin للـ root.
    */
 
-  const rootRef =
-    useRef<HTMLDivElement | null>(
-      null
-    );
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const pinRef =
-    useRef<HTMLDivElement | null>(
-      null
-    );
+  const pinRef = useRef<HTMLDivElement | null>(null);
 
-  const stageRef =
-    useRef<HTMLDivElement | null>(
-      null
-    );
+  const stageRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -842,132 +745,109 @@ function MobileStack({
       return;
     }
 
-    const cards = Array.from(
-      stage.querySelectorAll<HTMLElement>(
-        "[data-project-card]"
-      )
-    );
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>("[data-project-card]"));
 
     if (!cards.length) {
       return;
     }
 
-    let timeline:
-      | gsap.core.Timeline
-      | null = null;
+    let timeline: gsap.core.Timeline | null = null;
 
     const ctx = gsap.context(() => {
       /* ═══════════════════════════════
          INITIAL STATES
       ═══════════════════════════════ */
 
-      cards.forEach(
-        (card, index) => {
-          const media =
-            card.querySelector<HTMLElement>(
-              "[data-project-media]"
-            );
+      cards.forEach((card, index) => {
+        const media = card.querySelector<HTMLElement>("[data-project-media]");
 
-          const texts =
-            card.querySelectorAll<HTMLElement>(
-              "[data-project-text]"
-            );
+        const texts = card.querySelectorAll<HTMLElement>("[data-project-text]");
 
-          const counter =
-            card.querySelector<HTMLElement>(
-              "[data-project-counter]"
-            );
+        const counter = card.querySelector<HTMLElement>("[data-project-counter]");
 
-          /* FIRST CARD */
+        /* FIRST CARD */
 
-          if (index === 0) {
-            gsap.set(card, {
-              autoAlpha: 1,
-
-              yPercent: 0,
-
-              scale: 1,
-
-              rotateX: 0,
-              rotateZ: 0,
-
-              filter: "none",
-
-              zIndex: 1,
-
-              transformOrigin:
-                "50% 50%",
-            });
-
-            if (media) {
-              gsap.set(media, {
-                scale: 1.06,
-                yPercent: 0,
-              });
-            }
-
-            gsap.set(texts, {
-              y: 0,
-              autoAlpha: 1,
-            });
-
-            if (counter) {
-              gsap.set(counter, {
-                y: 0,
-                autoAlpha: 1,
-              });
-            }
-
-            return;
-          }
-
-          /* OTHER CARDS */
-
+        if (index === 0) {
           gsap.set(card, {
             autoAlpha: 1,
 
-            yPercent: 100,
+            yPercent: 0,
 
-            scale: 0.98,
+            scale: 1,
 
-            rotateX: 7,
-
-            rotateZ:
-              index % 2 === 0
-                ? 0.6
-                : -0.6,
+            rotateX: 0,
+            rotateZ: 0,
 
             filter: "none",
 
-            zIndex: index + 1,
+            zIndex: 1,
 
-            transformPerspective:
-              1200,
-
-            transformOrigin:
-              "50% 100%",
+            transformOrigin: "50% 50%",
           });
 
           if (media) {
             gsap.set(media, {
-              scale: 1.18,
-              yPercent: 3,
+              scale: 1,
+              yPercent: 0,
             });
           }
 
           gsap.set(texts, {
-            y: 35,
-            autoAlpha: 0,
+            y: 0,
+            autoAlpha: 1,
           });
 
           if (counter) {
             gsap.set(counter, {
-              y: 20,
-              autoAlpha: 0,
+              y: 0,
+              autoAlpha: 1,
             });
           }
+
+          return;
         }
-      );
+
+        /* OTHER CARDS */
+
+        gsap.set(card, {
+          autoAlpha: 1,
+
+          yPercent: 100,
+
+          scale: 0.98,
+
+          rotateX: 7,
+
+          rotateZ: index % 2 === 0 ? 0.6 : -0.6,
+
+          filter: "none",
+
+          zIndex: index + 1,
+
+          transformPerspective: 1200,
+
+          transformOrigin: "50% 100%",
+        });
+
+        if (media) {
+          gsap.set(media, {
+            scale: 0.96,
+            yPercent: 0,
+          });
+        }
+
+        gsap.set(texts, {
+          y: 35,
+          autoAlpha: 0,
+        });
+
+        if (counter) {
+          gsap.set(counter, {
+            y: 20,
+            autoAlpha: 0,
+          });
+        }
+      });
 
       /*
        * لو Project واحد بس
@@ -994,15 +874,7 @@ function MobileStack({
 
           start: "top top",
 
-          end: () =>
-            `+=${
-              window.innerHeight *
-              Math.max(
-                cards.length - 1,
-                1
-              ) *
-              1.15
-            }`,
+          end: () => `+=${window.innerHeight * Math.max(cards.length - 1, 1) * 1.15}`,
 
           scrub: 0.85,
 
@@ -1016,44 +888,22 @@ function MobileStack({
          PROJECT TRANSITIONS
       ═══════════════════════════════ */
 
-      for (
-        let i = 1;
-        i < cards.length;
-        i++
-      ) {
-        const previousCard =
-          cards[i - 1];
+      for (let i = 1; i < cards.length; i++) {
+        const previousCard = cards[i - 1];
 
-        const currentCard =
-          cards[i];
+        const currentCard = cards[i];
 
-        const previousMedia =
-          previousCard.querySelector<HTMLElement>(
-            "[data-project-media]"
-          );
+        const previousMedia = previousCard.querySelector<HTMLElement>("[data-project-media]");
 
-        const currentMedia =
-          currentCard.querySelector<HTMLElement>(
-            "[data-project-media]"
-          );
+        const currentMedia = currentCard.querySelector<HTMLElement>("[data-project-media]");
 
-        const previousText =
-          previousCard.querySelectorAll<HTMLElement>(
-            "[data-project-text]"
-          );
+        const previousText = previousCard.querySelectorAll<HTMLElement>("[data-project-text]");
 
-        const currentText =
-          currentCard.querySelectorAll<HTMLElement>(
-            "[data-project-text]"
-          );
+        const currentText = currentCard.querySelectorAll<HTMLElement>("[data-project-text]");
 
-        const currentCounter =
-          currentCard.querySelector<HTMLElement>(
-            "[data-project-counter]"
-          );
+        const currentCounter = currentCard.querySelector<HTMLElement>("[data-project-counter]");
 
-        const label =
-          `project-${i}`;
+        const label = `project-${i}`;
 
         timeline.addLabel(label);
 
@@ -1075,16 +925,14 @@ function MobileStack({
 
             rotateZ: 0,
 
-            filter:
-              "brightness(.55) saturate(.75)",
+            filter: "brightness(.55) saturate(.75)",
 
-            ease:
-              "power2.inOut",
+            ease: "power2.inOut",
 
             duration: 1,
           },
 
-          label
+          label,
         );
 
         /* OLD IMAGE */
@@ -1093,17 +941,16 @@ function MobileStack({
           timeline.to(
             previousMedia,
             {
-              scale: 1.12,
+              scale: 0.98,
 
-              yPercent: -2,
+              yPercent: 0,
 
-              ease:
-                "power2.inOut",
+              ease: "power2.inOut",
 
               duration: 1,
             },
 
-            label
+            label,
           );
         }
 
@@ -1116,13 +963,12 @@ function MobileStack({
 
             opacity: 0.18,
 
-            ease:
-              "power2.inOut",
+            ease: "power2.inOut",
 
             duration: 0.55,
           },
 
-          label
+          label,
         );
 
         /* ═════════════════════════════
@@ -1139,13 +985,9 @@ function MobileStack({
 
             rotateX: 7,
 
-            rotateZ:
-              i % 2 === 0
-                ? 0.6
-                : -0.6,
+            rotateZ: i % 2 === 0 ? 0.6 : -0.6,
 
-            filter:
-              "brightness(.9)",
+            filter: "brightness(.9)",
           },
 
           {
@@ -1157,19 +999,16 @@ function MobileStack({
 
             rotateZ: 0,
 
-            filter:
-              "brightness(1)",
+            filter: "brightness(1)",
 
-            ease:
-              "power3.inOut",
+            ease: "power3.inOut",
 
             duration: 1,
 
-            immediateRender:
-              false,
+            immediateRender: false,
           },
 
-          label
+          label,
         );
 
         /* NEW IMAGE */
@@ -1179,26 +1018,24 @@ function MobileStack({
             currentMedia,
 
             {
-              scale: 1.18,
+              scale: 0.96,
 
-              yPercent: 3,
+              yPercent: 0,
             },
 
             {
-              scale: 1.06,
+              scale: 1,
 
               yPercent: 0,
 
-              ease:
-                "power2.out",
+              ease: "power2.out",
 
               duration: 1,
 
-              immediateRender:
-                false,
+              immediateRender: false,
             },
 
-            label
+            label,
           );
         }
 
@@ -1217,16 +1054,14 @@ function MobileStack({
               y: 0,
               autoAlpha: 1,
 
-              ease:
-                "power3.out",
+              ease: "power3.out",
 
               duration: 0.4,
 
-              immediateRender:
-                false,
+              immediateRender: false,
             },
 
-            `${label}+=0.45`
+            `${label}+=0.45`,
           );
         }
 
@@ -1246,16 +1081,14 @@ function MobileStack({
 
             stagger: 0.06,
 
-            ease:
-              "power3.out",
+            ease: "power3.out",
 
             duration: 0.5,
 
-            immediateRender:
-              false,
+            immediateRender: false,
           },
 
-          `${label}+=0.45`
+          `${label}+=0.45`,
         );
 
         /* HOLD */
@@ -1264,7 +1097,7 @@ function MobileStack({
           {},
           {
             duration: 0.22,
-          }
+          },
         );
       }
     }, root);
@@ -1273,10 +1106,9 @@ function MobileStack({
      * Refresh بعد layout.
      */
 
-    const raf =
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+    const raf = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
 
     return () => {
       cancelAnimationFrame(raf);
@@ -1285,12 +1117,8 @@ function MobileStack({
        * نفك pin-spacer الأول.
        */
 
-      if (
-        timeline?.scrollTrigger
-      ) {
-        timeline.scrollTrigger.kill(
-          true
-        );
+      if (timeline?.scrollTrigger) {
+        timeline.scrollTrigger.kill(true);
       }
 
       timeline?.kill();
@@ -1334,9 +1162,7 @@ function MobileStack({
             pt-5
           "
         >
-          <SectionLabel>
-            Selected Work
-          </SectionLabel>
+          <SectionLabel>Selected Work</SectionLabel>
 
           {heading && (
             <p
@@ -1367,30 +1193,19 @@ function MobileStack({
             overflow-hidden
           "
           style={{
-            perspective:
-              "1200px",
+            perspective: "1200px",
 
-            transformStyle:
-              "preserve-3d",
+            transformStyle: "preserve-3d",
           }}
         >
-          {projects.map(
-            (
-              project,
-              index
-            ) => (
-              <MobileCinematicCard
-                key={`${project.title}-${index}`}
-                project={
-                  project
-                }
-                index={index}
-                total={
-                  projects.length
-                }
-              />
-            )
-          )}
+          {projects.map((project, index) => (
+            <MobileCinematicCard
+              key={`${project.title}-${index}`}
+              project={project}
+              index={index}
+              total={projects.length}
+            />
+          ))}
         </div>
 
         {/* ═══════════════════════════════
@@ -1466,11 +1281,9 @@ function MobileCinematicCard({
         will-change-transform
       "
       style={{
-        backfaceVisibility:
-          "hidden",
+        backfaceVisibility: "hidden",
 
-        WebkitBackfaceVisibility:
-          "hidden",
+        WebkitBackfaceVisibility: "hidden",
       }}
     >
       {/* ═══════════════════════════════
@@ -1481,47 +1294,41 @@ function MobileCinematicCard({
         data-project-media
         className="
           absolute
-          -inset-y-[5%]
-          inset-x-0
-          h-[110%]
+          inset-0
+          h-full
           w-full
+          overflow-hidden
+          bg-black
           will-change-transform
         "
       >
-        {project.media_type ===
-        "video" ? (
+        {project.media_type === "video" ? (
           <video
             src={project.media_url}
             autoPlay
             loop
             muted
             playsInline
-            preload={
-              index === 0
-                ? "auto"
-                : "metadata"
-            }
+            preload={index === 0 ? "auto" : "metadata"}
             className="
-              h-[368px]
-              w-[400px]
-              object-cover
+              h-full
+              w-full
+              object-contain
+              object-center
             "
           />
         ) : (
           <img
             src={project.media_url}
             alt={`${project.title} — ${project.category}`}
-            loading={
-              index === 0
-                ? "eager"
-                : "lazy"
-            }
+            loading={index === 0 ? "eager" : "lazy"}
             width={900}
             height={1400}
             className="
               h-full
               w-full
-              object-cover
+              object-contain
+              object-center
             "
           />
         )}
@@ -1593,9 +1400,7 @@ function MobileCinematicCard({
             leading-none
           "
         >
-          {String(
-            index + 1
-          ).padStart(2, "0")}
+          {String(index + 1).padStart(2, "0")}
         </span>
 
         <span
@@ -1605,11 +1410,7 @@ function MobileCinematicCard({
             text-white/40
           "
         >
-          /{" "}
-          {String(total).padStart(
-            2,
-            "0"
-          )}
+          / {String(total).padStart(2, "0")}
         </span>
       </div>
 
@@ -1662,8 +1463,7 @@ function MobileCinematicCard({
               text-white/75
             "
           >
-            {project.category} ·{" "}
-            {project.year}
+            {project.category} · {project.year}
           </span>
         </div>
 
@@ -1675,9 +1475,9 @@ function MobileCinematicCard({
             mt-5
             max-w-[95%]
             font-display
-            text-[clamp(3rem,14vw,5.5rem)]
+            text-[clamp(2.4rem,10vw,4.75rem)]
             font-bold
-            leading-[0.85]
+            leading-[0.92]
             tracking-[-0.05em]
             text-white
           "
@@ -1690,15 +1490,50 @@ function MobileCinematicCard({
         <p
           data-project-text
           className="
-            mt-5
-            max-w-[90%]
-            text-[13px]
-            leading-[1.7]
+            mt-4
+            max-w-[92%]
+            text-[12px]
+            leading-[1.6]
             text-white/60
           "
         >
           {project.blurb}
         </p>
+
+        {project.features?.length ? (
+          <div
+            data-project-text
+            className="
+              mt-4
+              flex
+              max-w-[95%]
+              flex-wrap
+              gap-1.5
+            "
+          >
+            {project.features.map((feature) => (
+              <span
+                key={feature}
+                className="
+                  rounded-full
+                  border
+                  border-white/15
+                  bg-black/25
+                  px-2.5
+                  py-1
+                  text-[8px]
+                  font-medium
+                  uppercase
+                  tracking-[0.12em]
+                  text-white/65
+                  backdrop-blur-md
+                "
+              >
+                {feature}
+              </span>
+            ))}
+          </div>
+        ) : null}
 
         {/* ACCENT */}
 
