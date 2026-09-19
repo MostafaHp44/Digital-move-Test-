@@ -1502,8 +1502,8 @@ function MobileCinematicCard({
                 : "metadata"
             }
             className="
-              h-full
-              w-full
+              h-[368px]
+              w-[400px]
               object-cover
             "
           />

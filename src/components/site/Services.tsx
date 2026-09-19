@@ -201,18 +201,20 @@ export function Services({ compact = false }: { compact?: boolean }) {
 
           {/* Preview card */}
           <RevealBlock className="lg:sticky lg:top-28 lg:h-fit">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-surface sm:aspect-auto sm:min-h-[28rem]">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-surface">
               <div className="grid-veil absolute inset-0" />
               <div className="absolute -bottom-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/25 blur-[80px]" />
 
-              <div className="relative flex h-full flex-col justify-between p-4 sm:p-6">
+              <div className="relative flex flex-col p-4 sm:p-6">
                 <div className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
                   Preview
                 </div>
 
-                <ServicePreview index={active} />
+                <div className="mt-4">
+                  <ServicePreview index={active} />
+                </div>
 
-                <div>
+                <div className="mt-4">
                   <p className="font-display text-lg font-semibold tracking-tight sm:text-xl">
                     {activeService.title}
                   </p>
@@ -263,61 +265,136 @@ export function Services({ compact = false }: { compact?: boolean }) {
 }
 
 function ServicePreview({ index }: { index: number }) {
-  const shared = "absolute inset-x-4 top-1/2 -translate-y-1/2 sm:inset-x-6";
   switch (index % 4) {
+    // Digital Menu: QR code phone mockup
     case 0:
       return (
-        <div className={cn(shared, "flex justify-center gap-2 sm:gap-3")}>
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="h-20 w-14 animate-drift rounded-lg border border-border bg-ink p-1.5 sm:h-28 sm:w-20 sm:rounded-xl sm:p-2"
-              style={{ animationDelay: `${i * 0.5}s` }}
-            >
-              <div className="h-6 w-full rounded bg-primary/20 sm:h-10" />
-              <div className="mt-1.5 h-1 w-3/4 rounded bg-surface-2 sm:mt-2 sm:h-1.5" />
-              <div className="mt-1 h-1 w-1/2 rounded bg-primary/40 sm:mt-1.5 sm:h-1.5" />
+        <div className="flex items-center justify-center gap-3 py-4 sm:gap-4 sm:py-6">
+          <div className="relative h-36 w-24 overflow-hidden rounded-xl border border-border bg-ink p-2 sm:h-48 sm:w-32 sm:p-3">
+            <div className="mb-2 h-3 w-full rounded bg-surface-2" />
+            <div className="flex justify-center">
+              <div className="grid h-14 w-14 grid-cols-5 gap-0.5 sm:h-20 sm:w-20">
+                {Array.from({ length: 25 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "rounded-sm",
+                      [0, 1, 2, 4, 5, 6, 9, 10, 11, 12, 14, 15, 16, 19, 20, 22, 23, 24].includes(i)
+                        ? "bg-primary"
+                        : "bg-transparent",
+                    )}
+                  />
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      );
-    case 1:
-      return (
-        <div className={cn(shared, "space-y-2 sm:space-y-3")}>
-          <div className="h-1.5 w-1/3 rounded bg-primary/60 sm:h-2" />
-          <div className="h-16 w-full overflow-hidden rounded-lg border border-border bg-ink sm:h-24 sm:rounded-xl">
-            <div className="trail-x h-px w-1/2 animate-sweep" />
-            <div className="space-y-1.5 p-2 sm:space-y-2 sm:p-3">
-              <div className="h-1.5 w-2/3 rounded bg-surface-2 sm:h-2" />
-              <div className="h-1.5 w-1/2 rounded bg-surface-2 sm:h-2" />
+            <div className="mt-2 space-y-1">
+              <div className="h-1.5 w-full rounded bg-surface-2" />
+              <div className="h-1.5 w-3/4 rounded bg-surface-2" />
+              <div className="h-1.5 w-1/2 rounded bg-primary/30" />
+            </div>
+          </div>
+          <div className="relative h-36 w-24 overflow-hidden rounded-xl border border-border bg-ink p-2 sm:h-48 sm:w-32 sm:p-3">
+            <div className="mb-2 h-3 w-full rounded bg-surface-2" />
+            <div className="space-y-2">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="flex gap-1.5">
+                  <div className="h-6 w-6 shrink-0 rounded bg-primary/20" />
+                  <div className="flex-1 space-y-1">
+                    <div className="h-1.5 w-full rounded bg-surface-2" />
+                    <div className="h-1.5 w-2/3 rounded bg-surface-2" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       );
-    case 2:
+
+    // Branding: color palette + design mockup
+    case 1:
       return (
-        <div className={cn(shared, "font-mono text-[10px] leading-5 sm:text-[11px] sm:leading-6")}>
-          {["<section data-motion>", "  <Trail speed={0.8} />", "</section>"].map((l, i) => (
-            <div
-              key={l}
-              className="text-muted-foreground"
-              style={{
-                animation: `dm-drift ${5 + i}s ease-in-out infinite`,
-              }}
-            >
-              <span className="text-primary">{l.slice(0, 2)}</span>
-              {l.slice(2)}
+        <div className="flex items-center justify-center gap-3 py-4 sm:gap-4 sm:py-6">
+          <div className="h-36 w-24 space-y-2 rounded-xl border border-border bg-ink p-2 sm:h-48 sm:w-32 sm:p-3">
+            <div className="h-12 w-full rounded bg-primary/30 sm:h-16" />
+            <div className="flex gap-1.5">
+              <div className="h-4 w-4 rounded-full bg-primary" />
+              <div className="h-4 w-4 rounded-full bg-rose-500" />
+              <div className="h-4 w-4 rounded-full bg-amber-500" />
+              <div className="h-4 w-4 rounded-full bg-emerald-500" />
             </div>
-          ))}
+            <div className="space-y-1">
+              <div className="h-1.5 w-full rounded bg-surface-2" />
+              <div className="h-1.5 w-2/3 rounded bg-surface-2" />
+            </div>
+          </div>
+          <div className="h-36 w-24 rounded-xl border border-border bg-ink p-2 sm:h-48 sm:w-32 sm:p-3">
+            <div className="mb-2 h-3 w-1/2 rounded bg-primary/40" />
+            <div className="space-y-2">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="h-3 w-full rounded bg-surface-2" />
+              ))}
+            </div>
+            <div className="mt-3 h-6 w-3/4 rounded bg-primary/20" />
+          </div>
         </div>
       );
+
+    // Website: browser mockup
+    case 2:
+      return (
+        <div className="flex items-center justify-center py-4 sm:py-6">
+          <div className="w-full max-w-[240px] overflow-hidden rounded-xl border border-border bg-ink sm:max-w-xs">
+            <div className="flex items-center gap-1.5 border-b border-border px-3 py-1.5">
+              <span className="h-2 w-2 rounded-full bg-rose-500/60" />
+              <span className="h-2 w-2 rounded-full bg-amber-500/60" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500/60" />
+              <div className="ml-2 h-3 flex-1 rounded bg-surface-2" />
+            </div>
+            <div className="h-32 bg-surface p-3 sm:h-40">
+              <div className="mb-2 h-4 w-2/3 rounded bg-primary/30" />
+              <div className="space-y-1.5">
+                <div className="h-2 w-full rounded bg-surface-2" />
+                <div className="h-2 w-4/5 rounded bg-surface-2" />
+                <div className="h-2 w-3/5 rounded bg-surface-2" />
+              </div>
+              <div className="mt-3 flex gap-2">
+                <div className="h-6 w-16 rounded bg-primary/40" />
+                <div className="h-6 w-16 rounded border border-border" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    // Business Card: NFC card + QR code
     default:
       return (
-        <div className={cn(shared, "flex items-center justify-center")}>
-          <div className="relative h-24 w-24 sm:h-32 sm:w-32">
-            <span className="absolute inset-0 rounded-full border border-primary/40 animate-pulse-glow" />
-            <span className="absolute inset-3 rounded-full border border-primary/25 sm:inset-4" />
-            <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary glow-ring sm:h-2 sm:w-2" />
+        <div className="flex items-center justify-center gap-4 py-4 sm:gap-6 sm:py-6">
+          <div className="relative h-24 w-36 overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-br from-ink to-surface p-3 sm:h-32 sm:w-44 sm:p-4">
+            <div className="text-[8px] font-bold uppercase tracking-wider text-primary sm:text-[10px]">Digital Mov</div>
+            <div className="mt-2 space-y-1">
+              <div className="h-1 w-12 rounded bg-surface-2" />
+              <div className="h-1 w-8 rounded bg-surface-2" />
+            </div>
+            <div className="absolute bottom-3 right-3 flex items-center gap-1">
+              <span className="text-[7px] text-muted-foreground sm:text-[8px]">NFC</span>
+              <div className="h-3 w-3 rounded bg-primary/40" />
+            </div>
+          </div>
+          <div className="relative h-20 w-20 rounded-lg border border-border bg-ink p-1.5 sm:h-24 sm:w-24 sm:p-2">
+            <div className="grid h-full grid-cols-5 gap-0.5">
+              {Array.from({ length: 25 }).map((_, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "rounded-sm",
+                    [0, 2, 4, 5, 7, 9, 10, 12, 14, 15, 17, 19, 20, 22, 24].includes(i)
+                      ? "bg-primary"
+                      : "bg-transparent",
+                  )}
+                />
+              ))}
+            </div>
           </div>
         </div>
       );
